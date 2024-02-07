@@ -1,5 +1,6 @@
 import socket
 import threading
+import sys
 from queue import Queue
 
 # target = the host you would like to scan (the target below is the nmap host we have permission to scan)
@@ -47,5 +48,16 @@ for thread in thread_list:
 for thread in thread_list:
     thread.join()
 
-# Prints a list of all the open ports found on the targeted host
+# Saves the reference of the standard output
+original_stdout = sys.stdout
+
+# Writes the open ports from the target host to a log file, any new scans will be appended to the file (change file to desired location)
+with open('portscanner_logs.txt', 'a') as f:
+    sys.stdout = f
+    print("Open ports on", target, "are:", open_ports)
+
+# Resets the standard output to print the scan done in the command line
+    sys.stdout = original_stdout
+
+# Prints a list of all the open ports found on the targeted host on the command line
 print("Open ports on", target, "are:", open_ports)
